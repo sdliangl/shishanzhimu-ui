@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>狮山智牧 - 农户端UI设计</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: #f5f5f5;
+            padding: 40px;
+        }
+        
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        
+        .title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .title h1 {
+            font-size: 36px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .title p {
+            font-size: 18px;
+            color: #666;
+        }
+        
+        .screens {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 30px;
+        }
+        
+        .screen {
+            background: #000;
+            border-radius: 30px;
+            padding: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .screen-inner {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            height: 600px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .status-bar {
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 15px;
+            color: white;
+            font-size: 12px;
+        }
+        
+        .screen-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .screen-title {
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+        
+        /* 首页样式 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            padding: 15px;
+            color: white;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        
+        .pending-orders {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+        }
+        
+        .section-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .order-item {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .order-id {
+            font-size: 14px;
+            color: #333;
+            font-weight: bold;
+        }
+        
+        .order-status {
+            font-size: 12px;
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+            padding: 3px 10px;
+            border-radius: 12px;
+        }
+        
+        .order-details {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        /* 订单管理样式 */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            background: #f8f9fa;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+        }
+        
+        .tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .order-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        /* 数据上传样式 */
+        .upload-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .form-group {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+        }
+        
+        .form-label {
+            font-size: 14px;
+            color: #333;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: block;
+        }
+        
+        .upload-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        
+        .input-field {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 14px;
+            width: 100%;
+        }
+        
+        /* 设备管理样式 */
+        .device-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .device-card {
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 15px;
+        }
+        
+        .device-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .device-name {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .device-status {
+            width: 12px;
+            height: 12px;
+            background: #4caf50;
+            border-radius: 50%;
+        }
+        
+        .device-info {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        /* 收益中心样式 */
+        .revenue-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 25px;
+            color: white;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .revenue-amount {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .revenue-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .withdraw-btn {
+            background: white;
+            color: #667eea;
+            padding: 12px;
+            border-radius: 25px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 15px;
+            cursor: pointer;
+        }
+        
+        .income-list {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+        }
+        
+        .income-item {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .income-info {
+            flex: 1;
+        }
+        
+        .income-title {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 3px;
+        }
+        
+        .income-date {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .income-amount {
+            font-size: 18px;
+            color: #4caf50;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">
+            <h1>🦁 狮山智牧 - 农户端UI设计</h1>
+            <p>简洁高效的农户管理界面</p>
+        </div>
+        
+        <div class="screens">
+            <!-- 首页 -->
+            <div class="screen">
+                <div class="screen-inner">
+                    <div class="status-bar">
+                        <span>9:41</span>
+                        <span>●●●●●</span>
+                    </div>
+                    <div class="screen-content">
+                        <div class="screen-title">首页</div>
+                        
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-value">3</div>
+                                <div class="stat-label">待处理订单</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value">¥4,800</div>
+                                <div class="stat-label">本月收益</div>
+                            </div>
+                        </div>
+                        
+                        <div class="pending-orders">
+                            <div class="section-title">待处理订单</div>
+                            
+                            <div class="order-item">
+                                <div class="order-header">
+                                    <span class="order-id">订单 #20001</span>
+                                    <span class="order-status">待接单</span>
+                                </div>
+                                <div class="order-details">
+                                    散养鸡 × 1 | ¥600
+                                </div>
+                            </div>
+                            
+                            <div class="order-item">
+                                <div class="order-header">
+                                    <span class="order-id">订单 #20002</span>
+                                    <span class="order-status">养殖中</span>
+                                </div>
+                                <div class="order-details">
+                                    散养鸭 × 1 | ¥500
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 订单管理 -->
+            <div class="screen">
+                <div class="screen-inner">
+                    <div class="status-bar">
+                        <span>9:41</span>
+                        <span>●●●●●</span>
+                    </div>
+                    <div class="screen-content">
+                        <div class="screen-title">订单管理</div>
+                        
+                        <div class="tabs">
+                            <div class="tab active">待接单</div>
+                            <div class="tab">养殖中</div>
+                            <div class="tab">已完成</div>
+                        </div>
+                        
+                        <div class="order-list">
+                            <div class="order-item">
+                                <div class="order-header">
+                                    <span class="order-id">订单 #20001</span>
+                                    <span class="order-status">待接单</span>
+                                </div>
+                                <div class="order-details">
+                                    用户：张三<br>
+                                    品种：散养鸡<br>
+                                    金额：¥600<br>
+                                    下单时间：2026-02-14
+                                </div>
+                            </div>
+                            
+                            <div class="order-item">
+                                <div class="order-header">
+                                    <span class="order-id">订单 #20003</span>
+                                    <span class="order-status">待接单</span>
+                                </div>
+                                <div class="order-details">
+                                    用户：李四<br>
+                                    品种：散养鸭<br>
+                                    金额：¥500<br>
+                                    下单时间：2026-02-13
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 数据上传 -->
+            <div class="screen">
+                <div class="screen-inner">
+                    <div class="status-bar">
+                        <span>9:41</span>
+                        <span>●●●●●</span>
+                    </div>
+                    <div class="screen-content">
+                        <div class="screen-title">数据上传</div>
+                        
+                        <div class="upload-form">
+                            <div class="form-group">
+                                <label class="form-label">📷 拍照上传</label>
+                                <div class="upload-btn">
+                                    点击拍照
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">⚖️ 体重记录</label>
+                                <input type="text" class="input-field" placeholder="请输入体重（kg）" value="2.5">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">📍 位置信息</label>
+                                <input type="text" class="input-field" placeholder="自动获取GPS位置" value="已获取">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">📝 备注说明</label>
+                                <input type="text" class="input-field" placeholder="请输入备注" value="生长状况良好">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 设备管理 -->
+            <div class="screen">
+                <div class="screen-inner">
+                    <div class="status-bar">
+                        <span>9:41</span>
+                        <span>●●●●●</span>
+                    </div>
+                    <div class="screen-content">
+                        <div class="screen-title">设备管理</div>
+                        
+                        <div class="device-list">
+                            <div class="device-card">
+                                <div class="device-header">
+                                    <span class="device-name">北斗定位器 #001</span>
+                                    <span class="device-status"></span>
+                                </div>
+                                <div class="device-info">绑定禽畜：散养鸡 #001</div>
+                                <div class="device-info">电量：85%</div>
+                                <div class="device-info">最后上传：5分钟前</div>
+                            </div>
+                            
+                            <div class="device-card">
+                                <div class="device-header">
+                                    <span class="device-name">北斗定位器 #002</span>
+                                    <span class="device-status"></span>
+                                </div>
+                                <div class="device-info">绑定禽畜：散养鸭 #002</div>
+                                <div class="device-info">电量：92%</div>
+                                <div class="device-info">最后上传：3分钟前</div>
+                            </div>
+                            
+                            <div class="device-card">
+                                <div class="device-header">
+                                    <span class="device-name">北斗定位器 #003</span>
+                                    <span class="device-status"></span>
+                                </div>
+                                <div class="device-info">绑定禽畜：未绑定</div>
+                                <div class="device-info">电量：100%</div>
+                                <div class="device-info">状态：待绑定</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 收益中心 -->
+            <div class="screen">
+                <div class="screen-inner">
+                    <div class="status-bar">
+                        <span>9:41</span>
+                        <span>●●●●●</span>
+                    </div>
+                    <div class="screen-content">
+                        <div class="screen-title">收益中心</div>
+                        
+                        <div class="revenue-card">
+                            <div class="revenue-amount">¥4,800</div>
+                            <div class="revenue-label">本月总收益</div>
+                            <div class="withdraw-btn">立即提现</div>
+                        </div>
+                        
+                        <div class="income-list">
+                            <div class="section-title">收入明细</div>
+                            
+                            <div class="income-item">
+                                <div class="income-info">
+                                    <div class="income-title">订单 #19998 完成</div>
+                                    <div class="income-date">2026-02-10 14:30</div>
+                                </div>
+                                <div class="income-amount">+¥480</div>
+                            </div>
+                            
+                            <div class="income-item">
+                                <div class="income-info">
+                                    <div class="income-title">订单 #19997 完成</div>
+                                    <div class="income-date">2026-02-08 16:20</div>
+                                </div>
+                                <div class="income-amount">+¥480</div>
+                            </div>
+                            
+                            <div class="income-item">
+                                <div class="income-info">
+                                    <div class="income-title">订单 #19996 完成</div>
+                                    <div class="income-date">2026-02-05 10:15</div>
+                                </div>
+                                <div class="income-amount">+¥400</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

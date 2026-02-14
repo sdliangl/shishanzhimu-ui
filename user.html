@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>狮山智牧 - 用户端UI设计</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: #f5f5f5;
+            padding: 40px;
+        }
+        
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        
+        .title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .title h1 {
+            font-size: 36px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .title p {
+            font-size: 18px;
+            color: #666;
+        }
+        
+        .screens {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 30px;
+        }
+        
+        .screen {
+            background: #000;
+            border-radius: 30px;
+            padding: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .screen-inner {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            height: 600px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .status-bar {
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 15px;
+            color: white;
+            font-size: 12px;
+        }
+        
+        .screen-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .screen-title {
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+        
+        /* 首页样式 */
+        .pet-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 20px;
+            color: white;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .pet-avatar {
+            width: 80px;
+            height: 80px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+        }
+        
+        .pet-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .pet-status {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        
+        .progress-bar {
+            background: rgba(255,255,255,0.3);
+            height: 8px;
+            border-radius: 4px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            background: white;
+            height: 100%;
+            width: 65%;
+            border-radius: 4px;
+        }
+        
+        .task-list {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+        }
+        
+        .task-item {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .task-title {
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .task-reward {
+            font-size: 12px;
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        /* 认养市场样式 */
+        .livestock-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .livestock-image {
+            width: 100%;
+            height: 120px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+        }
+        
+        .livestock-info {
+            padding: 12px;
+        }
+        
+        .livestock-name {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .livestock-details {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        
+        .livestock-price {
+            font-size: 18px;
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        /* 溯源页面样式 */
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #667eea;
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .timeline-dot {
+            position: absolute;
+            left: -24px;
+            top: 5px;
+            width: 12px;
+            height: 12px;
+            background: #667eea;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 0 0 2px #667eea;
+        }
+        
+        .timeline-content {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+        }
+        
+        .timeline-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .timeline-desc {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .timeline-time {
+            font-size: 11px;
+            color: #999;
+        }
+        
+        /* 社区页面样式 */
+        .rank-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .rank-number {
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 12px;
+        }
+        
+        .rank-info {
+            flex: 1;
+        }
+        
+        .rank-name {
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .rank-score {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        /* 我的页面样式 */
+        .profile-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            border-radius: 10px;
+            color: white;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .profile-avatar {
+            width: 60px;
+            height: 60px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+        }
+        
+        .profile-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .profile-level {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        
+        .menu-list {
+            background: #f8f9fa;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .menu-item {
+            background: white;
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+        
+        .menu-title {
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .menu-arrow {
+            color: #999;
+        }
+        
+        .bottom-nav {
+            height: 50px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            background: white;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            color: #999;
+            font-size: 11px;
+        }
+        
+        .nav-item.active {
+            color: #667eea;
+        }
+        
+        .nav-icon {
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">
+            <h1>🦁 狮山智牧 - 用户端UI设计</h1>
+            <p>游戏化认养 + 区块链溯源 + 社交互动</p>
+        </div>
+        
+        <div class="screens">
+            <!-- 首页 -->
+            <div class="screen">
+                <div class="screen-inner">
+                    <div class="status-bar">
+                        <span>9:41</span>
+                        <span>●●●●●</span>
+                    </div>
+                    <div class="screen-content">
+                        <div class="screen-title">首页 - 宠物养成</div>
+                        
+                        <div class="pet-card">
+                            <div class="pet-avatar">🐔</div>
+                            <div class="pet-name">我的小鸡 - 咕咕</div>
+                            <div class="pet-status">养殖中 · 第45天</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill"></div>
+                            </div>
+                            <div style="font-size: 12px;">成长进度 65% · 预计15天后收获</div>
+                        </div>
+                        
+                        <div class="task-list">
+                            <div style="font-size: 14px; font-weight: bold; margin-bottom: 10px; color: #333;">📋 每日任务</div>
+                            <div class="task-item">
+                                <span class="task-title">✅ 每日签到</span>
+                                <span class="task-reward">+10积分</span>
+                            </div>
+                            <div class="task-item">
+                                <span class="task-title">🍚 喂养互动</span>
+                                <span class="task-reward">+5积分</span>
+                            </div>
+                            <div class="task-item">
+                                <span class="task-title">📷 查看直播</span>
+                                <span class="task-reward">+3积分</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bottom-nav">
+                        <div class="nav-item active">
+                            <div class="nav-icon">🏠</div>
+                            <div>首页</div>
+                        </div>
+                        <div class="nav-item">
+                            <div class="nav-icon">🛒</div>
+                            <div>认养</div>
+                        </div>
+                        <div class="nav-item">
+                            <div class="nav-icon">🔗</div>
+                            <div>溯源</div>
+                        </div>
+                        <div class="nav-item">
+                            <div class="nav-icon">👥</div>
+                            <div>社区</div>
+                        </div>
+                        <div class="nav-item">
+                            <div class="nav-icon">👤</div>
+                            <div>我的</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 认养市场 -->
+            <div class="screen">
+                <div class="screen-inner">
+                    <div class="status-bar">
+                        <span>9:41</span>
+                        <span>●●●●●</span>
+                    </div>
+                    <div class="screen-content">
+                        <div class="screen-title">认养市场</div>
+                        
+                        <div class="livestock-card">
+                            <div class="livestock-image">🐔</div>
+                            <div class="livestock-info">
+                                <div class="livestock-name">散养土鸡</div>
+                                <div class="livestock-details">品种：三黄鸡 · 农户：张大爷</div>
+                                <div class="livestock-details">📍 湖北武汉 · 🌱 生态散养</div>
+                                <div class="livestock-price">¥600</div>
+                            </div>
+                        </div>
+                        
+                        <div class="livestock-card">
+                            <div class="livestock-image">🦆</div>
+                            <div class="livestock-info">
+                                <div class="livestock-name">散养土鸭</div>
+                                <div class="livestock-details">品种：麻鸭 · 农户：李阿姨</div>
+                                <div class="livestock-details">📍 湖北武汉 · 🌱 生态散养</div>
+                                <div class="livestock-price">¥550</div>
+                            </div>
+                        </div>
+                        
+                        <div class="livestock-card">
+                            <div class="livestock-image">🪿</div>
+                            <div class="livestock-info">
+                                <div class="livestock-name">散养大鹅</div>
+                                <div class="livestock-details">品种：白鹅 · 农户：王大叔</div>
+                                <div class="livestock-details">📍 湖北武汉 · 🌱 生态散养</div>
+                                <div class="livestock-price">¥800</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bottom-nav">
+                        <div class="nav-item">
+                            <div class="nav-icon">🏠</div>
+                            <div>首页</div>
+                        </div>
+                        <div class="nav-item active">
+                            <div class="nav-icon">🛒</div>
+                            <div>认养</div>
+                        </div>
+                        <div class="nav-item">
+                            <div class="nav-icon">🔗</div>
+                            <div>溯源</div>
+                        </div>
+                        <div class="nav-item">
+                            <div class="nav-icon">👥</div>
+                            <div>社区</div>
+                        </div>
+                        <div class="nav-item">
+                            <div class="nav-icon">👤</div>
+                            <div>我的</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 区块链溯源 -->
+            <div class="screen">
+                <div class="screen-inner">
+                    <div class="status-bar">
+                        <span>9:41</span>
+                        <span>●●●●●</span>
+                    </div>
+                    <div class="screen-content">
+                        <div class="screen-title">区块链溯源</div>
+                        
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-content">
+                                    <div class="timeline-title">🐣 认养成功</div>
+                                    <div class="timeline-desc">订单号：SZ202602140001</div>
+                                    <div class="timeline-desc">📍 湖北武汉狮子山</div>
+                                    <div class="timeline-time">2026-01-01 10:30</div>
+                                </div>
+                            </div>
+                            
+                            <div class="timeline-item">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-content">
+                                    <div class="timeline-title">🌱 开始养殖</div>
+                                    <div class="timeline-desc">农户：张大爷</div>
+                                    <div class="timeline-desc">📍 GPS定位已开启</div>
+                                    <div class="timeline-time">2026-01-01 14:00</div>
+                                </div>
+                            </div>
+                            
+                            <div class="timeline-item">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-content">
+                                    <div class="timeline-title">📊 成长记录</div>
+                                    <div class="timeline-desc">体重：1.2kg → 2.5kg</div>
+                                    <div class="timeline-desc">🔗 区块链存证</div>
+                                    <div class="timeline-time">2026-02-14 09:00</div>
+                                </div>
+                            </div>
+                            
+                            <div class="timeline-item">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-content">
+                                    <div class="timeline-title">🎯 即将收获</div>
+                                    <div class="timeline-desc">预计15天后可收获</div>
+                                    <div class="timeline-desc">📦 配送方式待选择</div>
+                                    <div class="timeline-time">预计 2026-03-01</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bottom-nav">
+                        <div class="nav-item">
+                            <div class="nav-icon">🏠</div>
+                            <div>首页</div>
+                        </div>
+                        <div class="nav-item">
+                            <div class="nav-icon">🛒</div>
+                            <div>认养</div>
+                        </div>
+                        <div class="nav-item active">
+                            <div class="nav-icon">🔗</div>
+                            <div>溯源</div>
+                        </div>
+                        <div class="nav-item">
+                            <div class="nav-icon">👥</div>
+                            <div>社区</div>
+                        </div>
+                        <div class="nav-item">
+                            <div class="nav-icon">👤</div>
+                            <div>我的</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 社区 -->
+            <div class="screen">
+                <div class="screen-inner">
+                    <div class="status-bar">
+                        <span>9:41</span>
+                        <span>●●●●●</span>
+                    </div>
+                    <div class="screen-content">
+                        <div class="screen-title">社区排行榜</div>
+                        
+                        <div class="rank-item">
+                            <div class="rank-number">1</div>
+                            <div class="rank-info">
+                                <div class="rank-name">🏆 养殖达人</div>
+                                <div class="rank-score">成长值：9850分</div>
+                            </div>
+                        </div>
+                        
+                        <div class="rank-item">
+                            <div class="rank-number">2</div>
+                            <div class="rank-info">
+                                <div class="rank-name">🥈 爱心用户</div>
+                                <div class="rank-score">成长值：8920分</div>
+                            </div>
+                        </div>
+                        
+                        <div class="rank-item">
+                            <div class="rank-number">3</div>
+                            <div class="rank-info">
+                                <div class="rank-name">🥉 新手玩家</div>
+                                <div class="rank-score">成长值：7650分</div>
+                            </div>
+                        </div>
+                        
+                        <div class="rank-item">
+                            <div class="rank-number">4</div>
+                            <div class="rank-info">
+                                <div class="rank-name">😊 快乐养鸡</div>
+                                <div class="rank-score">成长值：6540分</div>
+                            </div>
+                        </div>
+                        
+                        <div class="rank-item">
+                            <div class="rank-number">5</div>
+                            <div class="rank-info">
+                                <div class="rank-name">🌟 生态守护</div>
+                                <div class="rank-score">成长值：5890分</div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 10px; text-align: center;">
+                            <div style="font-size: 14px; color: #666; margin-bottom: 5px;">我的排名</div>
+                            <div style="font-size: 24px; font-weight: bold; color: #667eea;">第 12 名</div>
+                            <div style="font-size: 12px; color: #999; margin-top: 5px;">成长值：3250分</div>
+                        </div>
+                    </div>
+                    <div class="bottom-nav">
+                        <div class="nav-item">
+                            <div class="nav-icon">🏠</div>
+                            <div>首页</div>
+                        </div>
+                        <div class="nav-item">
+                            <div class="nav-icon">🛒</div>
+                            <div>认养</div>
+                        </div>
+                        <div class="nav-item">
+                            <div class="nav-icon">🔗</div>
+                            <div>溯源</div>
+                        </div>
+                        <div class="nav-item active">
+                            <div class="nav-icon">👥</div>
+                            <div>社区</div>
+                        </div>
+                        <div class="nav-item">
+                            <div class="nav-icon">👤</div>
+                            <div>我的</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 我的 -->
+            <div class="screen">
+                <div class="screen-inner">
+                    <div class="status-bar">
+                        <span>9:41</span>
+                        <span>●●●●●</span>
+                    </div>
+                    <div class="screen-content">
+                        <div class="screen-title">个人中心</div>
+                        
+                        <div class="profile-header">
+                            <div class="profile-avatar">👤</div>
+                            <div class="profile-name">爱心用户</div>
+                            <div class="profile-level">Lv.5 养殖达人 · 积分：3250</div>
+                        </div>
+                        
+                        <div class="menu-list">
+                            <div class="menu-item">
+                                <span class="menu-title">📦 我的订单</span>
+                                <span class="menu-arrow">›</span>
+                            </div>
+                            <div class="menu-item">
+                                <span class="menu-title">🐔 我的宠物</span>
+                                <span class="menu-arrow">›</span>
+                            </div>
+                            <div class="menu-item">
+                                <span class="menu-title">⭐ 我的积分</span>
+                                <span class="menu-arrow">›</span>
+                            </div>
+                            <div class="menu-item">
+                                <span class="menu-title">🎁 优惠券</span>
+                                <span class="menu-arrow">›</span>
+                            </div>
+                            <div class="menu-item">
+                                <span class="menu-title">📍 收货地址</span>
+                                <span class="menu-arrow">›</span>
+                            </div>
+                            <div class="menu-item">
+                                <span class="menu-title">⚙️ 设置</span>
+                                <span class="menu-arrow">›</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bottom-nav">
+                        <div class="nav-item">
+                            <div class="nav-icon">🏠</div>
+                            <div>首页</div>
+                        </div>
+                        <div class="nav-item">
+                            <div class="nav-icon">🛒</div>
+                            <div>认养</div>
+                        </div>
+                        <div class="nav-item">
+                            <div class="nav-icon">🔗</div>
+                            <div>溯源</div>
+                        </div>
+                        <div class="nav-item">
+                            <div class="nav-icon">👥</div>
+                            <div>社区</div>
+                        </div>
+                        <div class="nav-item active">
+                            <div class="nav-icon">👤</div>
+                            <div>我的</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
