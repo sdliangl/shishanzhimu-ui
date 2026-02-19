@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>狮山智牧 - 智慧认养禽畜小程序演示</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: #f5f5f5;
+            padding-bottom: 60px;
+        }
+        .phone-frame {
+            max-width: 375px;
+            margin: 20px auto;
+            background: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+        .navbar {
+            background: #4CAF50;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .page { display: none; }
+        .page.active { display: block; }
+        
+        /* 首页样式 */
+        .user-header {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            padding: 20px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+        }
+        .user-info { flex: 1; }
+        .nickname { font-size: 18px; font-weight: bold; }
+        .level-points { 
+            margin-top: 5px;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .section-title {
+            padding: 15px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .pet-card {
+            margin: 0 15px 15px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .pet-photo {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .pet-info {
+            padding: 15px;
+        }
+        .pet-name {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .growth-bar {
+            margin: 10px 0;
+        }
+        .progress-bar {
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: #4CAF50;
+            transition: width 0.3s;
+        }
+        
+        .task-list {
+            padding: 0 15px;
+        }
+        .task-item {
+            background: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .task-icon { font-size: 24px; }
+        .task-info { flex: 1; }
+        .btn-task {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 12px;
+        }
+        
+        /* 认养市场样式 */
+        .filter-tabs {
+            display: flex;
+            background: white;
+            padding: 10px;
+            gap: 10px;
+        }
+        .tab {
+            flex: 1;
+            padding: 8px;
+            text-align: center;
+            border-radius: 5px;
+            background: #f5f5f5;
+            cursor: pointer;
+        }
+        .tab.active {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .livestock-card {
+            margin: 15px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .livestock-photo {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .livestock-info {
+            padding: 15px;
+        }
+        .livestock-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .livestock-name {
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .livestock-details {
+            font-size: 14px;
+            color: #666;
+            margin: 5px 0;
+        }
+        .livestock-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        .price-value {
+            font-size: 20px;
+            color: #f44336;
+            font-weight: bold;
+        }
+        .btn-adopt {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+        
+        /* 区块链溯源样式 */
+        .map-placeholder {
+            height: 300px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+        
+        .blockchain-item {
+            margin: 15px;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .record-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .record-type {
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        .record-hash {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 5px;
+            font-size: 12px;
+            word-break: break-all;
+        }
+        
+        /* 个人中心样式 */
+        .user-card {
+            background: white;
+            padding: 20px;
+            margin: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .user-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        .stat-item {
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #999;
+            margin-top: 5px;
+        }
+        
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            padding: 15px;
+            background: white;
+            margin: 15px;
+            border-radius: 10px;
+        }
+        .menu-item {
+            text-align: center;
+            cursor: pointer;
+        }
+        .menu-icon {
+            font-size: 32px;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .menu-label {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        /* 底部导航 */
+        .tabbar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            border-top: 1px solid #eee;
+            max-width: 375px;
+            margin: 0 auto;
+        }
+        .tabbar-item {
+            flex: 1;
+            padding: 8px;
+            text-align: center;
+            cursor: pointer;
+        }
+        .tabbar-item.active {
+            color: #4CAF50;
+        }
+        .tabbar-icon {
+            font-size: 24px;
+            display: block;
+        }
+        .tabbar-label {
+            font-size: 12px;
+            margin-top: 2px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+        
+        .demo-badge {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: #f44336;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-badge">演示版本 v1.0</div>
+    
+    <div class="phone-frame">
+        <div class="navbar" id="navbar-title">狮山智牧</div>
+        
+        <!-- 首页 -->
+        <div class="page active" id="page-home">
+            <div class="user-header">
+                <div class="avatar">👤</div>
+                <div class="user-info">
+                    <div class="nickname">演示用户</div>
+                    <div class="level-points">Lv.5 | 积分: 1280</div>
+                </div>
+            </div>
+            
+            <div class="section-title">我的养成</div>
+            <div class="pet-card">
+                <img class="pet-photo" src="https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?w=400" alt="鸡">
+                <div class="pet-info">
+                    <div class="pet-name">🐔 土鸡</div>
+                    <div class="growth-bar">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                            <span style="font-size: 12px;">成长进度</span>
+                            <span style="font-size: 12px; color: #4CAF50;">75%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 75%"></div>
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-top: 10px; font-size: 14px; color: #666;">
+                        <span>当前: 2.5kg</span>
+                        <span>目标: 3.5kg</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section-title">每日任务</div>
+            <div class="task-list">
+                <div class="task-item">
+                    <span class="task-icon">📅</span>
+                    <div class="task-info">
+                        <div style="font-weight: bold;">每日签到</div>
+                        <div style="font-size: 12px; color: #999;">+10积分</div>
+                    </div>
+                    <button class="btn-task">签到</button>
+                </div>
+                <div class="task-item">
+                    <span class="task-icon">🌾</span>
+                    <div class="task-info">
+                        <div style="font-weight: bold;">喂养宠物</div>
+                        <div style="font-size: 12px; color: #999;">+20积分</div>
+                    </div>
+                    <button class="btn-task">喂养</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 认养市场 -->
+        <div class="page" id="page-market">
+            <div class="filter-tabs">
+                <div class="tab active">全部</div>
+                <div class="tab">🐔 鸡</div>
+                <div class="tab">🦆 鸭</div>
+                <div class="tab">🦢 鹅</div>
+            </div>
+            
+            <div class="livestock-card">
+                <img class="livestock-photo" src="https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?w=400" alt="土鸡">
+                <div class="livestock-info">
+                    <div class="livestock-header">
+                        <span class="livestock-name">优质土鸡</span>
+                        <span style="color: #4CAF50;">🐔 鸡</span>
+                    </div>
+                    <div class="livestock-details">出生日期: 2026-01-15</div>
+                    <div class="livestock-details">当前体重: 1.5kg | 目标: 3.5kg</div>
+                    <div class="livestock-details">农户: 张大叔 ⭐ 4.9</div>
+                    <div class="livestock-footer">
+                        <div>
+                            <div style="font-size: 12px; color: #999;">认养价格</div>
+                            <div class="price-value">¥388</div>
+                        </div>
+                        <button class="btn-adopt">立即认养</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="livestock-card">
+                <img class="livestock-photo" src="https://images.unsplash.com/photo-1612170153139-6f881ff067e0?w=400" alt="鸭">
+                <div class="livestock-info">
+                    <div class="livestock-header">
+                        <span class="livestock-name">生态鸭</span>
+                        <span style="color: #4CAF50;">🦆 鸭</span>
+                    </div>
+                    <div class="livestock-details">出生日期: 2026-01-20</div>
+                    <div class="livestock-details">当前体重: 1.2kg | 目标: 3.0kg</div>
+                    <div class="livestock-details">农户: 李阿姨 ⭐ 5.0</div>
+                    <div class="livestock-footer">
+                        <div>
+                            <div style="font-size: 12px; color: #999;">认养价格</div>
+                            <div class="price-value">¥298</div>
+                        </div>
+                        <button class="btn-adopt">立即认养</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 区块链溯源 -->
+        <div class="page" id="page-trace">
+            <div class="map-placeholder">
+                🗺️ GPS轨迹地图<br>
+                <small style="font-size: 14px; opacity: 0.8;">（演示版本）</small>
+            </div>
+            
+            <div style="padding: 15px; background: white;">
+                <div style="display: flex; justify-content: space-around; text-align: center;">
+                    <div>
+                        <div style="font-size: 12px; color: #999;">活动范围</div>
+                        <div style="font-size: 18px; font-weight: bold; color: #4CAF50;">500m²</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 12px; color: #999;">活动距离</div>
+                        <div style="font-size: 18px; font-weight: bold; color: #4CAF50;">2.3km</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 12px; color: #999;">最后更新</div>
+                        <div style="font-size: 18px; font-weight: bold; color: #4CAF50;">10分钟前</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section-title">区块链存证记录</div>
+            <div class="blockchain-item">
+                <div class="record-header">
+                    <span class="record-type">🔗 认养存证</span>
+                    <span style="font-size: 12px; color: #999;">2026-02-01</span>
+                </div>
+                <div style="font-size: 14px; color: #666; margin: 10px 0;">
+                    用户成功认养土鸡，订单号: SSZ202602010001
+                </div>
+                <div class="record-hash">
+                    <div style="font-size: 12px; color: #999; margin-bottom: 5px;">区块链哈希:</div>
+                    0x7a8f9b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a
+                </div>
+                <div style="margin-top: 10px; color: #4CAF50; font-size: 12px;">
+                    ✓ 已验证
+                </div>
+            </div>
+            
+            <div class="blockchain-item">
+                <div class="record-header">
+                    <span class="record-type">🌾 喂养存证</span>
+                    <span style="font-size: 12px; color: #999;">2026-02-10</span>
+                </div>
+                <div style="font-size: 14px; color: #666; margin: 10px 0;">
+                    农户投喂玉米2.5kg，体重增长至2.5kg
+                </div>
+                <div class="record-hash">
+                    <div style="font-size: 12px; color: #999; margin-bottom: 5px;">区块链哈希:</div>
+                    0x1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c
+                </div>
+                <div style="margin-top: 10px; color: #4CAF50; font-size: 12px;">
+                    ✓ 已验证
+                </div>
+            </div>
+        </div>
+        
+        <!-- 个人中心 -->
+        <div class="page" id="page-profile">
+            <div class="user-card">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div class="avatar">👤</div>
+                    <div>
+                        <div class="nickname">演示用户</div>
+                        <div class="level-points">Lv.5 | 积分: 1280</div>
+                    </div>
+                </div>
+                <div class="user-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">认养数</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">1</div>
+                        <div class="stat-label">已完成</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">45</div>
+                        <div class="stat-label">养成天数</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section-title">功能菜单</div>
+            <div class="menu-grid">
+                <div class="menu-item">
+                    <span class="menu-icon">📋</span>
+                    <div class="menu-label">全部订单</div>
+                </div>
+                <div class="menu-item">
+                    <span class="menu-icon">🏆</span>
+                    <div class="menu-label">我的证书</div>
+                </div>
+                <div class="menu-item">
+                    <span class="menu-icon">⭐</span>
+                    <div class="menu-label">积分商城</div>
+                </div>
+                <div class="menu-item">
+                    <span class="menu-icon">🎫</span>
+                    <div class="menu-label">优惠券</div>
+                </div>
+                <div class="menu-item">
+                    <span class="menu-icon">❤️</span>
+                    <div class="menu-label">我的收藏</div>
+                </div>
+                <div class="menu-item">
+                    <span class="menu-icon">📍</span>
+                    <div class="menu-label">收货地址</div>
+                </div>
+                <div class="menu-item">
+                    <span class="menu-icon">💬</span>
+                    <div class="menu-label">意见反馈</div>
+                </div>
+                <div class="menu-item">
+                    <span class="menu-icon">ℹ️</span>
+                    <div class="menu-label">关于我们</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 底部导航 -->
+        <div class="tabbar">
+            <div class="tabbar-item active" onclick="switchPage('home')">
+                <span class="tabbar-icon">🏠</span>
+                <div class="tabbar-label">我的养成</div>
+            </div>
+            <div class="tabbar-item" onclick="switchPage('market')">
+                <span class="tabbar-icon">🛒</span>
+                <div class="tabbar-label">认养市场</div>
+            </div>
+            <div class="tabbar-item" onclick="switchPage('trace')">
+                <span class="tabbar-icon">🔗</span>
+                <div class="tabbar-label">区块链溯源</div>
+            </div>
+            <div class="tabbar-item" onclick="switchPage('profile')">
+                <span class="tabbar-icon">👤</span>
+                <div class="tabbar-label">我的</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function switchPage(pageName) {
+            // 隐藏所有页面
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // 显示目标页面
+            document.getElementById('page-' + pageName).classList.add('active');
+            
+            // 更新导航栏标题
+            const titles = {
+                'home': '狮山智牧',
+                'market': '认养市场',
+                'trace': '区块链溯源',
+                'profile': '个人中心'
+            };
+            document.getElementById('navbar-title').textContent = titles[pageName];
+            
+            // 更新底部导航激活状态
+            document.querySelectorAll('.tabbar-item').forEach((item, index) => {
+                item.classList.remove('active');
+            });
+            const pageIndex = ['home', 'market', 'trace', 'profile'].indexOf(pageName);
+            document.querySelectorAll('.tabbar-item')[pageIndex].classList.add('active');
+        }
+    </script>
+</body>
+</html>
